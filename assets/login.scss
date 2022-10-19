@@ -1,0 +1,39 @@
+
+body {margin: 0; padding: 0;}
+.login-wrapper {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--colors-background);
+}
+.login-bottomimg {
+    position: absolute;
+    margin-bottom: -20px;
+    bottom: 0;
+    right: 0;
+}
+.login-topimg {
+    position: absolute;
+    top: 0; 
+    left: 0;
+}
+.login-form-wrapper {
+    display: flex;
+}
+.login-form-header {
+    font-style: normal;
+    font-weight: 700;
+    // font-size: 200%;
+    font-size: 35px;
+
+    line-height: 41px;
+    /* identical to box height */
+    
+    text-align: center;
+    letter-spacing: 0.15em;
+    
+    color: #FFFFFF;
+}
