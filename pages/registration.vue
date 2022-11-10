@@ -61,11 +61,15 @@
         <div class="login-form-header">Thrift Box</div>
         <div class="login-form-preheader">контролируй, считай, планируй</div>
         <input  
-          type="text"
-          class="login-form-login"
+          id="register_post"  
+          v-model="mail"
+          type="text"          
+          class="login-form-login" 
           placeholder="Введите почту"
           />
-        <input  
+        <input 
+          id="register_pass"  
+          v-model="pass"
           type="password"
           class="login-form-login"
           placeholder="Введите пароль"
@@ -76,7 +80,7 @@
           placeholder="Повторите пароль"
           />
        
-        <v-btn class="login-form-in">Зарегистрироваться</v-btn>
+        <v-btn id="register_button" class="login-form-in" @click="register_user(mail, pass)">Зарегистрироваться</v-btn>
       </div>
       <div class="login-bottomimg">
         <svg
@@ -124,11 +128,45 @@
     </div>
   </template>
   <script>
+  import axios from '@/axios';
+  
   export default {
     layout: 'empty',
+    data() {
+    return{
+      mail: '',
+      pass: '',
+    }
+  },
+    methods: {
+      async register_user(mailtemp, pass){
+      try{
+        await axios({
+          method: 'POST',
+          url: 'users/registration',
+          data: {
+            "name": mailtemp,
+            "email": mailtemp,
+            "password": pass,            
+            }
+            })
+            this.$router.push({ name: 'login', path: '/login', component: 'pages/login.vue' })
+            
+        } catch(err){
+        if (err !== 200){
+          await this.$router.push({ name: 'registration', path: '/registration', component: 'pages/registration.vue' })
+          /* console.log(console.error(err)); */
+        }
+      }
+        
+        
+      }
+    }
   }
+  
   </script>
   <style>
+  
   @import '../assets/registration.scss';
   </style>
   

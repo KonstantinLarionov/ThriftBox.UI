@@ -4,14 +4,14 @@
             <img style="width: 54px; height: 54px; border-radius: 54px;" src="../assets/imgs/54.png"/>
         </div>
         <div class="item-info">
-            <div class="item-info-header">Счет карты Тинькофф</div>
-            <div class="item-info-about">15 операций за неделю</div>
-            <div class="item-info-decription">Основная валюта RUB</div>
+            <div class="item-info-header">Счет карты {{bankName}}</div>
+            <div class="item-info-about">{{numberWeekTransactions}} операций за неделю</div>
+            <div class="item-info-decription">Основная валюта {{mainCurrency}}</div>
         </div>
         <div class="item-value">
-            <div class="item-info-header">154 000 Руб.</div>
-            <div class="item-info-about">2 493,52 Дол.</div>
-            <div class="item-info-decription">2 542,93 Евр.</div>
+            <div class="item-info-header">{{mainCurrencyTotal}} Руб.</div>
+            <div class="item-info-about">{{secondCurrencyTotal}} Дол.</div>
+            <div class="item-info-decription">{{thirdCurrencyTotal}} Евр.</div>
         </div>
         <div v-if="state === 'edit'" >asd</div>
         <div v-else-if="state === 'standart'" >123123</div>
@@ -21,7 +21,13 @@
 export default {
     layout: "empty",
     props: {
-        state: String
+        state: String,
+        bankName: String,
+        numberWeekTransactions: String,
+        mainCurrency: String,
+        mainCurrencyTotal: String,
+        secondCurrencyTotal: String,
+        thirdCurrencyTotal: String,
     },
     mounted(){
 

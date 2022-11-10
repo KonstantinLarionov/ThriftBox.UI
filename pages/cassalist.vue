@@ -59,7 +59,15 @@
     </div>
 
     <div class="list-wrapper">
-      <CassaItem id="item" :state="state"></CassaItem>
+      <CassaItem id="item"
+                  bankName = "Tinkoff"
+                  numberWeekTransactions = '15'
+                  mainCurrency = 'RUB'
+                  mainCurrencyTotal = '150 000,00'
+                  secondCurrencyTotal = '50 000,00' 
+                  thirdCurrencyTotal = '35 000,00' 
+                  :state="state"
+                  @clicl="openCassaOperation()"></CassaItem>
       <CassaItem></CassaItem>
       <CassaItem></CassaItem>
       <CassaItem></CassaItem>
@@ -72,7 +80,7 @@
     </div>
 
     <div class="buttons-wrapper">
-      <button class="btn-add-check">
+      <button class="btn-add-check" @click=getCassas()>
         <svg
           style="margin-right: 10px"
           width="25"
@@ -88,7 +96,8 @@
         </svg>
         Добавить счет
       </button>
-      <button class="btn-add-operation">
+      
+      <button @click="openCassaOperation()" class="btn-add-operation">
         <svg
           style="margin-right: 10px; margin-top: 7px"
           width="25"
@@ -175,12 +184,16 @@
 </template>
 
 <script>
+/* import axios from '~/axios' */
 import CassaItem from '~/components/CassaItem.vue'
+import axios from '@/axios';
+
 export default {
   layout: 'empty',
   props : {
     state_prop: String
   },
+  
   data: function(){
     return {
       state: this.state_prop
@@ -197,7 +210,7 @@ export default {
     },
     methods: {
         setClick(){
-            
+
             const b = document.getElementById("item")
  
             const m = (_ => {
@@ -217,7 +230,54 @@ export default {
                 }
             })()
             b.onmousedown = b.onpointerdown = b.onpointerup = b.onmouseup = m
+        },
+        /* назначено на кнопку "добавить счёт" */
+        getCassas(){
+          axios({
+            method: 'GET',
+            url: 'cassa/getCassas',
+            params:{ 
+              UserId: '08dac15a-e33e-4aa3-89d4-e4bff1413089'
+            },
+          })
+          .then(responce => console.log(responce))
+        },
+        deleteCassas(){
+          axios({
+            method: 'DELETE',
+            url: 'cassa/deleteCassa',
+          })
+        },
+        updateCassa(){
+          axios({
+            method: 'PUT',
+            url: 'cassa/updateCassa'
+          })
+        },
+        postCassa(){
+          axios({
+            method: 'POST',
+            url: 'cassa/createCassa'
+          })
+        },
+        getCassa(){
+          axios({
+            method: 'GET',
+            url: 'bank/getBank',
+            params:{ 
+              Id: '1'
+            }
+          })
+        },
+        openCassaOperation(){
+          try{
+          this.$router.push({ name: 'cassaOperation', path: '/cassaOperation', component: 'pages/cassaOperation.vue' });
+          console.log('okey')
+        } catch {
+          console.log('posos')
         }
+        },
+        
     }
 }
 </script>

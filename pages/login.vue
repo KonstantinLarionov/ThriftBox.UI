@@ -61,17 +61,19 @@
       <div class="login-form-header">Thrift Box</div>
       <div class="login-form-preheader">контролируй, считай, планируй</div>
       <input  
+        v-model="mail"
         type="text"
         class="login-form-login"
         placeholder="Введите почту"
         />
       <input  
+        v-model="pass"
         type="password"
         class="login-form-login"
         placeholder="Введите пароль"
         />
      
-      <v-btn class="login-form-in">Войти</v-btn>
+      <v-btn class="login-form-in" @click="postUsers(mail, pass)">Войти</v-btn>
     </div>
     <div class="login-bottomimg">
       <svg
@@ -119,8 +121,42 @@
   </div>
 </template>
 <script>
+import axios from '@/axios';
 export default {
   layout: 'empty',
+
+  data() {
+    return{
+      mail: '',
+      pass: '',
+    }
+  },
+    methods: {
+      
+      async postUsers(mailtemp, pass){
+      try{
+        await axios({
+          
+          method: 'PUT',
+          url: 'users/login',
+          data: {
+            "login": mailtemp,
+            "password": pass,
+            }
+            })            
+            
+            this.$router.push({ name: 'cassalist', path: '/cassalist', component: 'pages/cassalist.vue' })
+        } catch(err){
+        if (err !== 200){
+          
+          const kooka = 201
+          err.$cookiz.set(kooka);
+          await this.$router.push({ name: 'login', path: '/login', component: 'pages/login.vue' })
+          console.log('kooka = ', this.$cookiz.kooka.value)
+        }
+      }
+    }
+  }
 }
 </script>
 <style>
