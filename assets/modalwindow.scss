@@ -1,0 +1,85 @@
+.modal{
+	padding: 15px;
+	position: absolute;
+	top: 50px;
+	margin-left: 5%;
+	margin-right: 5%;
+	width: 90%;
+	height: 80%;
+	align-items: center;
+	text-align: center;
+	background-color: #5C4E6A;
+	border-radius: 35px;
+	box-shadow: 10px,10px,10px,10px;
+	z-index: 10;	
+	filter: blur(10%);
+	
+	&_header, &_footer{
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		
+	}
+
+	&_content{
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+}
+.modal_inputName{
+	background-color: white;
+	border-radius: 35px;
+	width: 80%;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 20px;	
+	font-size: 20px;
+}
+.modal_cassaBankSelect{
+	background-color: white;
+	margin-top: 20px;
+	width: 30%;
+	text-align: center;
+	margin-right: 0px;
+	margin-left: 50%;
+	overflow: visible;
+	border: 0.2em solid;
+	font-size: 20px;
+	border-radius: 35px;
+}
+.modal_chooseImage{
+	background-color: white;
+	border-radius: 50%;
+	width: 98px;
+	height: 98px;
+	padding: 10%;
+	margin-top: 20px;
+	margin-left: 10%;
+}
+.modal_inputcolor{
+	position: relative;
+	margin-right: 10%;
+	margin-left: 10%;
+	margin-top: 10%;
+	margin-bottom: 10%;
+	width: 100%;
+	border-radius: 25px;
+	
+}
+.modal_labelcolor{
+	display: inline-flex;	
+	margin-left: 60%;
+	margin-right: 18%; 
+}
+.modal_divcolor{
+	background-color: white;
+	width: 10%;
+	height: 30px;
+	margin-left: 82%;
+	margin-right: 10%; 
+	align-items: center;
+
+	border-radius: 25px;
+	display: inline-flex;
+}

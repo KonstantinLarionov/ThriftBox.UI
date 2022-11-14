@@ -84,13 +84,14 @@
 
             <div class="bottom_panel">
                 <div class="stats_text">15 операций за неделю</div>
-                <div class="list_of_bills">Список счетов</div>
+                <div @click="openCassaList()" class="list_of_bills">Список счетов</div>
                 <div class="add_operation">Добавить операцию</div>
                 
             </div>
         </div>
     </div>
 </div>
+
 </template>
 
 <script>
@@ -101,7 +102,12 @@ export default {
     // props: {
         
     // },    
-    components: { CassaOperation }
+    components: { CassaOperation },
+    methods:{
+        openCassaList(){
+            this.$router.push({name:'cassalist', path:'/cassalist', component: 'pages/cassalist'});
+        }
+    }
 }
 </script>
 

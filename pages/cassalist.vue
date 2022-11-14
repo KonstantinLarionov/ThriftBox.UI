@@ -58,7 +58,16 @@
       </svg>
     </div>
 
+
+    
+    
+
     <div class="list-wrapper">
+               
+      <div>        
+        <div @click="updateCassa()" class="left"><img src="~/assets/imgs/edit.svg" alt="изменить" class="edit_img"> </div>
+        <div @click="openCassaOperation()" class="center"></div>
+        <div @click=deleteCassa() class="right"><img src="~/assets/imgs/delete.svg" alt="удалить" class="delete_img"></div>
       <CassaItem id="item"
                   bankName = "Tinkoff"
                   numberWeekTransactions = '15'
@@ -66,9 +75,15 @@
                   mainCurrencyTotal = '150 000,00'
                   secondCurrencyTotal = '50 000,00' 
                   thirdCurrencyTotal = '35 000,00' 
-                  :state="state"
-                  @clicl="openCassaOperation()"></CassaItem>
+                  :state="state"></CassaItem>
+                  
+        </div>
+        <div>        
+        <div @click="switchmodal_updateCassa()" class="left"><img src="~/assets/imgs/edit.svg" alt="изменить" class="edit_img"> </div>
+        <div @click="openCassaOperation()" class="center"></div>
+        <div @click="switchmodal_deleteCassa()" class="right"><img src="~/assets/imgs/delete.svg" alt="удалить" class="delete_img"></div>
       <CassaItem></CassaItem>
+    </div>
       <CassaItem></CassaItem>
       <CassaItem></CassaItem>
       <CassaItem></CassaItem>
@@ -80,7 +95,7 @@
     </div>
 
     <div class="buttons-wrapper">
-      <button class="btn-add-check" @click=getCassas()>
+      <button class="btn-add-check" @click='switchModalVisible'>
         <svg
           style="margin-right: 10px"
           width="25"
@@ -97,7 +112,7 @@
         Добавить счет
       </button>
       
-      <button @click="openCassaOperation()" class="btn-add-operation">
+      <button class="btn-add-operation">
         <svg
           style="margin-right: 10px; margin-top: 7px"
           width="25"
@@ -180,26 +195,74 @@
         </defs>
       </svg>
     </div>
+  
+ <!-- модальное окно добавления счёта -->
+  <ModalWindow name="add check"
+    v-if="isModalCheckVisible" 
+    v-click-outside="switchModalVisible" 
+    modal_header_title = "Добавить счёт">
+    <div class="modal_inputName"><input placeholder="Название кассы" type="text"></div>
+    <select class="modal_cassaBankSelect" id="cassaBankSelect">
+      <option disabled>Выберите тип создаваемого счёта</option>
+      <option value="Касса">Касса</option>
+      <option value="Банк">Банк</option>
+    </select> 
+    <div class="modal_chooseImage">
+      <input type="image">
+    </div>
+    
+      <label for="modal_inputcolor" class="modal_labelcolor">Выберите цвет</label>
+    <div class="modal_divcolor">
+      <input type="color" class="modal_inputcolor" id="modal_inputcolor" >    
+    </div>
+  </ModalWindow>
+  <!-- Модальное окно удаления счёта -->
+  <ModalWindow name="delete check"
+  v-if="isModalDeleteVisible"
+  v-click-outside=switchmodal_deleteCassa()
+    modal_header_title="Удалить счёт"
+  >
+  <div class="modal_inputName"><input placeholder="Название кассы" type="text"></div>
+    <select class="modal_cassaBankSelect" id="cassaBankSelect">
+      <option disabled>Выберите тип создаваемого счёта</option>
+      <option value="Касса">Касса</option>
+      <option value="Банк">Банк</option>
+    </select> 
+    <div class="modal_chooseImage">
+      <input type="image">
+    </div>
+    
+      <label for="modal_inputcolor" class="modal_labelcolor">Выберите цвет</label>
+    <div class="modal_divcolor">
+      <input type="color" class="modal_inputcolor" id="modal_inputcolor" >    
+    </div>
+  </ModalWindow>
+  
   </div>
 </template>
 
 <script>
-/* import axios from '~/axios' */
 import CassaItem from '~/components/CassaItem.vue'
 import axios from '@/axios';
+import ModalWindow from '~/components/ModalWindow.vue';
+/* import { url } from 'inspector'; */
+/* import { listenerCount } from 'process'; */
 
 export default {
   layout: 'empty',
   props : {
-    state_prop: String
+    state_prop: String,
   },
   
   data: function(){
     return {
-      state: this.state_prop
+      isModalCheckVisible: false,
+      isModalDeleteVisible: false,
+      isModalUpdateVisible: false,
+      state: this.state_prop,
     }
   },
-  components: { CassaItem },
+  components: { CassaItem, ModalWindow },
   mounted() {
             document.getElementById("cassalist").addEventListener('mousedown', function(e)
             { 
@@ -231,7 +294,6 @@ export default {
             })()
             b.onmousedown = b.onpointerdown = b.onpointerup = b.onmouseup = m
         },
-        /* назначено на кнопку "добавить счёт" */
         getCassas(){
           axios({
             method: 'GET',
@@ -239,31 +301,121 @@ export default {
             params:{ 
               UserId: '08dac15a-e33e-4aa3-89d4-e4bff1413089'
             },
+            data:{
+              "cassa": [{
+                "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                "updated": "2022-11-13T05:45:03.098Z",
+                "balance": {
+                  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                  "updated": "2022-11-13T05:45:03.098Z",
+                  "amount": 0,
+                  "amountUSD": 0,
+                  "amountEUR": 0,
+                  "amountCash": 0,
+                  "amountCard": 0
+                },
+                "predictBalance": {
+                  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                  "updated": "2022-11-13T05:45:03.098Z",
+                  "amount": 0,
+                  "amountUSD": 0,
+                  "amountEUR": 0,
+                  "amountCash": 0,
+                  "amountCard": 0
+                },
+                "operations": [{
+                    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                    "updated": "2022-11-13T05:45:03.098Z",
+                    "operationType": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                    "amount": 0,
+                    "amountUSD": 0,
+                    "amountEUR": 0,
+                    "courseUSD": 0,
+                    "courseEUR": 0,
+                    "isCash": true,
+                    "isExpense": true,
+                    "isPredict": true,
+                    "currencyType": 0,
+                    "description": "string",
+                    "created": "2022-11-13T05:45:03.098Z"
+                  }],
+                "currencyType": 0,
+                "currentAmount": 0
+              }]
+            }
           })
           .then(responce => console.log(responce))
         },
-        deleteCassas(){
+        deleteCassa(){
           axios({
             method: 'DELETE',
             url: 'cassa/deleteCassa',
+            data:{
+              "id": 1,
+            },
           })
         },
         updateCassa(){
           axios({
             method: 'PUT',
-            url: 'cassa/updateCassa'
+            url: 'cassa/updateCassa',
+            data:{
+              "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+              "balance": {
+                "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                "updated": "2022-11-13T05:42:59.113Z",
+                "amount": 0,
+                "amountUSD": 0,
+                "amountEUR": 0,
+                "amountCash": 0,
+                "amountCard": 0
+              },
+              "predictBalance": {
+                "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                "updated": "2022-11-13T05:42:59.113Z",
+                "amount": 0,
+                "amountUSD": 0,
+                "amountEUR": 0,
+                "amountCash": 0,
+                "amountCard": 0
+              },
+              "currencyType": 0,
+              "currentAmount": 0
+            },
           })
         },
         postCassa(){
           axios({
             method: 'POST',
-            url: 'cassa/createCassa'
+            url: 'cassa/createCassa',
+            data:{
+              "balance": {
+                "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                "updated": "2022-11-13T05:44:04.838Z",
+                "amount": 0,
+                "amountUSD": 0,
+                "amountEUR": 0,
+                "amountCash": 0,
+                "amountCard": 0
+              },
+              "predictBalance": {
+                "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                "updated": "2022-11-13T05:44:04.838Z",
+                "amount": 0,
+                "amountUSD": 0,
+                "amountEUR": 0,
+                "amountCash": 0,
+                "amountCard": 0
+              },
+              "currencyType": 0,
+              "currentAmount": 0
+            }
           })
         },
         getCassa(){
           axios({
             method: 'GET',
-            url: 'bank/getBank',
+            url: 'cassa/getCassa',
             params:{ 
               Id: '1'
             }
@@ -277,11 +429,361 @@ export default {
           console.log('posos')
         }
         },
-        
+        switchmodal_deleteCassa(){
+          if (this.isModalDeleteVisible===true) {
+            this.isModalCheckVisible=false;            
+          } else {
+            this.isModalDeleteVisible=true;
+            
+          } 
+        },
+        switchModalVisible(){
+          if (this.isModalCheckVisible===true) {
+            this.isModalCheckVisible=false;
+            document.querySelector(".login-topimg").style.backgroundFilter = 'blur(5px)';
+          } else {
+            this.isModalCheckVisible=true;
+            document.querySelector('.login-topimg').style.baackgroundFilter = 'blur(5px)';
+          }          
+          console.log('isModalVisible = ', this.isModalCheckVisible.valueOf(this.isModalCheckVisible));
+        },          
+        deleteBank(){
+          axios({
+            method: 'DELETE',
+            url:'bank/deleteBank',
+            data:{
+              "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            }
+          })
+        },
+        updateBank(){
+          axios({
+            method: 'PUT',
+            url:'bank/updateBank',
+            data:{
+              "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+              "mainCurrency": 0,
+              "amount": 0,
+              "amountUSD": 0,
+              "amountEUR": 0
+            }
+          })
+        },
+        getBanks(){
+          axios({
+            method: 'GET',
+            url:'bank/getBanks',
+            params: 'UserId',
+          })
+        },
+        getBank(){
+          axios({
+            method: 'GET',
+            url:'bank/getBank',
+            params: 'Id',
+          })
+        },
+        createBank(){
+          axios({
+            method: 'POST',
+            url:'bank/createBank',
+            data:{
+              "mainCurrency": 0,
+              "amount": 0,
+              "amountUSD": 0,
+              "amountEUR": 0
+            }
+          })
+        },
+        getBalance(){
+          axios({
+            method: 'GET',
+            url:'balance/getBalance',
+            params: 'Id',
+          })
+        },
+        updateBalance(){
+          axios({
+            method: 'PUT',
+            url:'balance/updateBalance',
+            data:{
+              "amount": 0,
+              "amountUSD": 0,
+              "amountEUR": 0,
+              "amountCash": 0,
+              "amountCard": 0
+            }
+          })
+        },
+        getCource(){
+          axios({
+            method: 'GET',
+            url:'/course/getCourse',
+            params: 'Id',
+          })
+        },
+        updateCourse(){
+          axios({
+            method: 'PUT',
+            url:'/course/updateCourse',
+            data:{
+              "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+              "currencyType": 0,
+              "currency": "string",
+              "value": 0
+            }
+          })
+        },
+        createBankOperation(){
+          axios({
+            method: 'POST',
+            url:'operationBank/createBankOperation',
+            data:{
+              "operationType": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+              "amount": 0,
+              "amountUSD": 0,
+              "amountEUR": 0,
+              "courseUSD": 0,
+              "courseEUR": 0,
+              "isCash": true,
+              "isExpense": true,
+              "isPredict": true,
+              "currencyType": 0,
+              "description": "string"
+            }
+          })
+        },
+        getBankOperation(){
+          axios({
+            method: 'GET',
+            url:'operationBank/getBankOperation',
+            params: 'Id',
+          })
+        },
+        getBankOperations(){
+          axios({
+            method: 'GET',
+            url:'operationBank/getBankOperations',
+            params: 'Id',
+          })
+        },
+        updateBankOperation(){
+          axios({
+            method: 'PUT',
+            url:'/operationBank/updateBankOperation',
+            data:{
+              "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+              "operationType": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+              "amount": 0,
+              "amountUSD": 0,
+              "amountEUR": 0,
+              "courseUSD": 0,
+              "courseEUR": 0,
+              "isCash": true,
+              "isExpense": true,
+              "isPredict": true,
+              "currencyType": 0,
+              "description": "string",
+              "created": "2022-11-14T08:25:14.086Z"
+            }
+          })
+        },
+        deleteBankOperation(){
+          axios({
+            method: 'DELETE',
+            url:'operationBank/deleteBankOperation',
+            data:{
+              "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            }
+          })
+        },
+        createOperationCassa(){
+          axios({
+            method: 'POST',
+            url:'operationCassa/createOperationCassa',
+            data:{
+              "operationType": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+              "amount": 0,
+              "amountUSD": 0,
+              "amountEUR": 0,
+              "courseUSD": 0,
+              "courseEUR": 0,
+              "isCash": true,
+              "isExpense": true,
+              "isPredict": true,
+              "currencyType": 0,
+              "description": "string",
+              "created": "2022-11-14T08:28:50.091Z"
+            }
+          })
+        },
+        getOperationCassa(){
+          axios({
+            method: 'GET',
+            url:'operationCassa/getOperationCassa',
+            params: 'Id',
+            data:{
+              
+            }
+          })
+        },
+        getOperationsCassa(){
+          axios({
+            method: 'GET',
+            url:'operationCassa/getOperationsCassa',
+            params: 'CassaId',
+            data:{
+              
+            }
+          })
+        },
+        updateOperationCassa(){
+          axios({
+            method: 'PUT',
+            url:'/operationCassa/updateOperationCassa',
+            data:{
+              "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+              "operationType": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+              "amount": 0,
+              "amountUSD": 0,
+              "amountEUR": 0,
+              "courseUSD": 0,
+              "courseEUR": 0,
+              "isCash": true,
+              "isExpense": true,
+              "isPredict": true,
+              "currencyType": 0,
+              "description": "string",
+              "created": "2022-11-14T08:34:37.869Z"
+            }
+          })
+        },
+        deleteOperationCassa(){
+          axios({
+            method: 'DELETE',
+            url:'operationCassa/deleteOperationCassa',
+            data:{
+              "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            }
+          })
+        },
+        createOperationType(){
+          axios({
+            method: 'POST',
+            url:'operationType/createOperationType',
+            data:{
+              "name": "string",
+              "description": "string",
+              "svg": "string"
+            }
+          })
+        },
+        getOperationType(){
+          axios({
+            method: 'GET',
+            url:'operationType/getOperationType',
+            params: 'Id',
+            data:{
+            }
+          })
+        },
+        getOperationTypes(){
+          axios({
+            method: 'GET',
+            url:'operationType/getOperationType',
+            data:{
+
+            }           
+          })
+        },
+        updateOperationType(){
+          axios({
+            method: 'PUT',
+            url:'/operationType/updateOperationType',
+            data:{
+              "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+              "name": "string",
+              "description": "string",
+              "svg": "string"
+            }
+          })
+        },
+        deleteOperationType(){
+          axios({
+            method: 'DELETE',
+            url:'operationType/deleteOperationType',
+            data:{
+              "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            }
+          })
+        },
+        createSubOperationType(){
+          axios({
+            method: 'POST',
+            url:'subOperationType/createSubOperationType',
+            data:{
+              "operationTypeId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+              "name": "string",
+              "description": "string",
+              "svg": "string"
+            }
+          })
+        },
+        getSubOperationType(){
+          axios({
+            method: 'GET',
+            url:'subOperationType/getSubOperationType',
+            params: 'Id',
+            data:{
+
+            }           
+          })
+        },
+        getSubOperationTypes(){
+          axios({
+            method: 'GET',
+            url:'subOperationType/getSubOperationTypes',
+            params: 'OperationTypeId',
+            data:{
+
+            }           
+          })
+        },
+        updateSubOperationType(){
+          axios({
+            method: 'PUT',
+            url:'/subOperationType/updateSubOperationType',
+            data:{
+              "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+              "name": "string",
+              "description": "string",
+              "svg": "string"
+            }
+          })
+        },
+        deleteSubOperationType(){
+          axios({
+            method: 'DELETE',
+            url:'subOperationType/deleteSubOperationType',
+            data:{
+              "subOperationTypeId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+              "operationTypeId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+            }
+          })
+        }
     }
 }
+/* окраска задника картинки по выбору цвета в input */
+/* const input = document.querySelector("#modal_inputcolor");
+const div = document.querySelector(".modal_divcolor");
+
+input.addEventListener("input", () => {
+  div.style.backgroundColor = input.value;
+}); */
+
 </script>
 
 <style>
 @import '../assets/cassalist.scss';
+@import "../assets/modalwindow.scss";
 </style>
