@@ -64,10 +64,20 @@
 
     <div class="list-wrapper">
                
-      <div>        
-        <div @click="updateCassa()" class="left"><img src="~/assets/imgs/edit.svg" alt="изменить" class="edit_img"> </div>
+      <CassaItem v-for="item in cassasarr=getCassas()" v-bind:key="item.Id" 
+                  id="item0"
+                  bankName = Tinkoff0
+                  numberWeekTransactions = '15'
+                  mainCurrency = 'RUB'
+                  mainCurrencyTotal = '150 000,00'
+                  secondCurrencyTotal = '50 000,00' 
+                  thirdCurrencyTotal = '35 000,00' 
+                  :state="state"></CassaItem> 
+
+      <!-- <div> -->        
+        <!-- <div @click="switchmodal_updateCassa()" class="left"><img src="~/assets/imgs/edit.svg" alt="изменить" class="edit_img"> </div> -->
         <div @click="openCassaOperation()" class="center"></div>
-        <div @click=deleteCassa() class="right"><img src="~/assets/imgs/delete.svg" alt="удалить" class="delete_img"></div>
+        <!-- <div @click=switchmodal_deleteCassa() class="right"><img src="~/assets/imgs/delete.svg" alt="удалить" class="delete_img"></div> -->
       <CassaItem id="item"
                   bankName = "Tinkoff"
                   numberWeekTransactions = '15'
@@ -75,15 +85,9 @@
                   mainCurrencyTotal = '150 000,00'
                   secondCurrencyTotal = '50 000,00' 
                   thirdCurrencyTotal = '35 000,00' 
-                  :state="state"></CassaItem>
-                  
-        </div>
-        <div>        
-        <div @click="switchmodal_updateCassa()" class="left"><img src="~/assets/imgs/edit.svg" alt="изменить" class="edit_img"> </div>
-        <div @click="openCassaOperation()" class="center"></div>
-        <div @click="switchmodal_deleteCassa()" class="right"><img src="~/assets/imgs/delete.svg" alt="удалить" class="delete_img"></div>
-      <CassaItem></CassaItem>
-    </div>
+                  :state="state"></CassaItem>       
+        <!-- </div> -->
+        
       <CassaItem></CassaItem>
       <CassaItem></CassaItem>
       <CassaItem></CassaItem>
@@ -112,7 +116,7 @@
         Добавить счет
       </button>
       
-      <button class="btn-add-operation">
+      <button @click="switchModalAdd()" class="btn-add-operation">
         <svg
           style="margin-right: 10px; margin-top: 7px"
           width="25"
@@ -201,52 +205,158 @@
     v-if="isModalCheckVisible" 
     v-click-outside="switchModalVisible" 
     modal_header_title = "Добавить счёт">
-    <div class="modal_inputName"><input placeholder="Название кассы" type="text"></div>
-    <select class="modal_cassaBankSelect" id="cassaBankSelect">
-      <option disabled>Выберите тип создаваемого счёта</option>
-      <option value="Касса">Касса</option>
-      <option value="Банк">Банк</option>
-    </select> 
+    <div class="modal_divName"><input class="modal_inputall" placeholder="Название кассы" type="text" id="modal_inputname"></div>
+    <div class="modal_divselect">      
+      <label for="cassaBankSelect" class="modal_labelselect">Выберите тип счёта</label>
+      <select class="modal_cassaBankSelect" id="cassaBankSelect">
+        <option value="Касса">Касса</option>
+        <option value="Банк">Банк</option>
+      </select> 
+    </div>
+    <div class="modal_divimageSelect">
+      <div class="modal_chooseImage">
+        <input type="image">
+      </div>  
+      
+      <div class="modal_selectGroup">
+        <div class="modal_divImg">
+        <select class="modal_updateImgSelect">
+          <option value="">изображение</option>
+          <option value="1"><emoji name="smile" size="20"/></option>
+          <option value="2"><emoji name="man_with_turban" size="20"/></option>
+        </select> 
+      </div>
+      <div class="modal_divinputcolor">
+        <label for="modal_inputcolor" class="modal_labelcolor">Выберите цвет</label>
+        <div class="modal_divcolor">
+          <input type="color" class="modal_inputcolor" id="modal_inputcolor" >    
+        </div>
+      
+    </div>
+      </div>
+    </div>
+    <div class="modal_bottomButtonsAdd">
+      <button @click="switchModalVisible" class="modal_cancelbtn">Отмена</button>
+      <button @click="postCassaBank()" class="modal_acceptbtn">Добавить</button>
+  </div>
+  </ModalWindow>
+  <!-- Модальное окно добавления операции -->
+  <ModalWindow
+  v-if="isModalAddOperationVisible" 
+  v-click-outside="switchModalAdd" 
+  modal_header_title="Добавление новой операции"
+  >
+  <div class="modal_divName"><input class="modal_inputall" placeholder="Название операции" type="text"></div>
+  <div class="modal_divName"><input class="modal_inputall" placeholder="Сумма операции" type="text"></div>
+  <div class="modal_adress">
+    <div class="modal_divadress"><input class="modal_inputall" placeholder="Адрес или описание" type="text"></div>
+      <div class="modal_divadressmark">
+        <svg width="20" height="1" viewBox="0 0 19 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9.5 25C9.5 25 18.875 16.1156 18.875 9.375C18.875 6.8886 17.8873 4.50403 16.1291 2.74587C14.371 0.98772 11.9864 0 9.5 0C7.0136 0 4.62903 0.98772 2.87087 2.74587C1.11272 4.50403 0.125 6.8886 0.125 9.375C0.125 16.1156 9.5 25 9.5 25ZM9.5 14.0625C8.2568 14.0625 7.06451 13.5686 6.18544 12.6896C5.30636 11.8105 4.8125 10.6182 4.8125 9.375C4.8125 8.1318 5.30636 6.93951 6.18544 6.06044C7.06451 5.18136 8.2568 4.6875 9.5 4.6875C10.7432 4.6875 11.9355 5.18136 12.8146 6.06044C13.6936 6.93951 14.1875 8.1318 14.1875 9.375C14.1875 10.6182 13.6936 11.8105 12.8146 12.6896C11.9355 13.5686 10.7432 14.0625 9.5 14.0625Z" fill="black"/>
+        </svg>
+    </div>
+  </div>
+  <div class="modal_divPlan">
+    <div  class="modal_labalPlan" >
+      <label for="modal_checkboxPlan">Планируемая операция
+        <input class="modal_checkboxPlan" type="checkbox" id="modal_checkboxPlan">
+        <span class="modal_customCheckbox"></span>
+      </label>
+    </div>
+
+  </div>
+  <div>
     <div class="modal_chooseImage">
       <input type="image">
-    </div>
-    
-      <label for="modal_inputcolor" class="modal_labelcolor">Выберите цвет</label>
+    </div>    
     <div class="modal_divcolor">
-      <input type="color" class="modal_inputcolor" id="modal_inputcolor" >    
+      <input type="color" class="modal_inputcolor">
     </div>
+  </div>
+  <div class="modal_bottomButtonsAddOperation">
+      <button  class="modal_arrowUP">
+        <svg width="10" height="10" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M35 17.5C35 12.8587 33.1563 8.40752 29.8744 5.12563C26.5925 1.84374 22.1413 0 17.5 0C12.8587 0 8.40752 1.84374 5.12563 5.12563C1.84374 8.40752 0 12.8587 0 17.5C0 22.1413 1.84374 26.5925 5.12563 29.8744C8.40752 33.1563 12.8587 35 17.5 35C22.1413 35 26.5925 33.1563 29.8744 29.8744C33.1563 26.5925 35 22.1413 35 17.5ZM18.5938 25.1562C18.5938 25.4463 18.4785 25.7245 18.2734 25.9296C18.0683 26.1348 17.7901 26.25 17.5 26.25C17.2099 26.25 16.9317 26.1348 16.7266 25.9296C16.5215 25.7245 16.4062 25.4463 16.4062 25.1562V12.4841L11.7119 17.1806C11.5065 17.386 11.2279 17.5014 10.9375 17.5014C10.6471 17.5014 10.3685 17.386 10.1631 17.1806C9.95775 16.9752 9.84237 16.6967 9.84237 16.4062C9.84237 16.1158 9.95775 15.8373 10.1631 15.6319L16.7256 9.06938C16.8272 8.96752 16.9479 8.88671 17.0808 8.83157C17.2137 8.77643 17.3561 8.74804 17.5 8.74804C17.6439 8.74804 17.7863 8.77643 17.9192 8.83157C18.0521 8.88671 18.1728 8.96752 18.2744 9.06938L24.8369 15.6319C25.0423 15.8373 25.1576 16.1158 25.1576 16.4062C25.1576 16.6967 25.0423 16.9752 24.8369 17.1806C24.6315 17.386 24.3529 17.5014 24.0625 17.5014C23.7721 17.5014 23.4935 17.386 23.2881 17.1806L18.5938 12.4841V25.1562Z" fill="white"/>
+        </svg>
+      </button>
+      <button class="modal_photoBtn">
+        <svg width="35" height="1" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g clip-path="url(#clip0_4_746)">
+            <path d="M22.9688 18.5938C22.9688 20.0442 22.3926 21.4352 21.367 22.4607C20.3414 23.4863 18.9504 24.0625 17.5 24.0625C16.0496 24.0625 14.6586 23.4863 13.633 22.4607C12.6074 21.4352 12.0313 20.0442 12.0312 18.5938C12.0313 17.1433 12.6074 15.7523 13.633 14.7268C14.6586 13.7012 16.0496 13.125 17.5 13.125C18.9504 13.125 20.3414 13.7012 21.367 14.7268C22.3926 15.7523 22.9688 17.1433 22.9688 18.5938Z" fill="black"/>
+            <path d="M4.375 8.75C3.21468 8.75 2.10188 9.21094 1.28141 10.0314C0.460936 10.8519 0 11.9647 0 13.125L0 26.25C0 27.4103 0.460936 28.5231 1.28141 29.3436C2.10188 30.1641 3.21468 30.625 4.375 30.625H30.625C31.7853 30.625 32.8981 30.1641 33.7186 29.3436C34.5391 28.5231 35 27.4103 35 26.25V13.125C35 11.9647 34.5391 10.8519 33.7186 10.0314C32.8981 9.21094 31.7853 8.75 30.625 8.75H28.0613C26.901 8.74975 25.7884 8.28865 24.9681 7.46813L23.1569 5.65687C22.3366 4.83635 21.224 4.37525 20.0637 4.375H14.9362C13.776 4.37525 12.6634 4.83635 11.8431 5.65687L10.0319 7.46813C9.21159 8.28865 8.09898 8.74975 6.93875 8.75H4.375ZM5.46875 13.125C5.17867 13.125 4.90047 13.0098 4.69535 12.8046C4.49023 12.5995 4.375 12.3213 4.375 12.0312C4.375 11.7412 4.49023 11.463 4.69535 11.2579C4.90047 11.0527 5.17867 10.9375 5.46875 10.9375C5.75883 10.9375 6.03703 11.0527 6.24215 11.2579C6.44727 11.463 6.5625 11.7412 6.5625 12.0312C6.5625 12.3213 6.44727 12.5995 6.24215 12.8046C6.03703 13.0098 5.75883 13.125 5.46875 13.125ZM25.1562 18.5938C25.1562 20.6243 24.3496 22.5717 22.9138 24.0075C21.478 25.4434 19.5306 26.25 17.5 26.25C15.4694 26.25 13.522 25.4434 12.0862 24.0075C10.6504 22.5717 9.84375 20.6243 9.84375 18.5938C9.84375 16.5632 10.6504 14.6158 12.0862 13.18C13.522 11.7441 15.4694 10.9375 17.5 10.9375C19.5306 10.9375 21.478 11.7441 22.9138 13.18C24.3496 14.6158 25.1562 16.5632 25.1562 18.5938Z" fill="black"/>
+          </g>
+          <defs>
+            <clipPath id="clip0_4_746">
+              <rect width="35" height="35" fill="white"/>
+            </clipPath>
+          </defs>
+        </svg>
+      </button>
+      <button @click="createOperationCassa()" class="modal_arrowDWN">
+        <svg width="35" height="35" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M35 17.5C35 22.1413 33.1563 26.5925 29.8744 29.8744C26.5925 33.1563 22.1413 35 17.5 35C12.8587 35 8.40752 33.1563 5.12563 29.8744C1.84374 26.5925 0 22.1413 0 17.5C0 12.8587 1.84374 8.40752 5.12563 5.12563C8.40752 1.84374 12.8587 0 17.5 0C22.1413 0 26.5925 1.84374 29.8744 5.12563C33.1563 8.40752 35 12.8587 35 17.5ZM18.5938 9.84375C18.5938 9.55367 18.4785 9.27547 18.2734 9.07035C18.0683 8.86523 17.7901 8.75 17.5 8.75C17.2099 8.75 16.9317 8.86523 16.7266 9.07035C16.5215 9.27547 16.4062 9.55367 16.4062 9.84375V22.5159L11.7119 17.8194C11.5065 17.614 11.2279 17.4986 10.9375 17.4986C10.6471 17.4986 10.3685 17.614 10.1631 17.8194C9.95775 18.0248 9.84237 18.3033 9.84237 18.5938C9.84237 18.8842 9.95775 19.1627 10.1631 19.3681L16.7256 25.9306C16.8272 26.0325 16.9479 26.1133 17.0808 26.1684C17.2137 26.2236 17.3561 26.252 17.5 26.252C17.6439 26.252 17.7863 26.2236 17.9192 26.1684C18.0521 26.1133 18.1728 26.0325 18.2744 25.9306L24.8369 19.3681C25.0423 19.1627 25.1576 18.8842 25.1576 18.5938C25.1576 18.3033 25.0423 18.0248 24.8369 17.8194C24.6315 17.614 24.3529 17.4986 24.0625 17.4986C23.7721 17.4986 23.4935 17.614 23.2881 17.8194L18.5938 22.5159V9.84375Z" fill="white"/>
+        </svg>
+
+      </button>
+  </div>
   </ModalWindow>
   <!-- Модальное окно удаления счёта -->
-  <ModalWindow name="delete check"
+  <!-- <ModalWindow name="delete check"
   v-if="isModalDeleteVisible"
-  v-click-outside=switchmodal_deleteCassa()
-    modal_header_title="Удалить счёт"
+  v-click-outside="switchmodal_deleteCassa"
+  modal_header_title="Удалить кассу"
   >
-  <div class="modal_inputName"><input placeholder="Название кассы" type="text"></div>
-    <select class="modal_cassaBankSelect" id="cassaBankSelect">
-      <option disabled>Выберите тип создаваемого счёта</option>
-      <option value="Касса">Касса</option>
-      <option value="Банк">Банк</option>
-    </select> 
+  <label for="modal_cassaID" class="modal_labelcassaID">Введите Id кассы</label>
+  <div class="modal_divName">    
+    <input placeholder="ID кассы" type="text" class="modal_cassaID" name="modal_cassaID">
+  </div>
+Подтвердите удаление
+  <div class="modal_bottombuttonsDelete">
+    <button @click="switchmodal_deleteCassa" class="modal_cancelbtn">Отмена</button>
+    <button @click="deleteCassa(this.input.value)" class="modal_acceptbtn">Удалить</button>
+  </div>
+  </ModalWindow> -->
+
+  <!-- Модальное окно обновления кассы -->
+  <!-- <ModalWindow name="update check"
+  v-if="isModalUpdateVisible"
+  v-click-outside="switchmodal_updateCassa"
+  modal_header_title="Обновить кассу"
+  >
+  <div class="modal_divName"><input class="modal_inputall" placeholder="Название кассы" type="text"></div>
+  <VueEmoji ref="emoji" @input="onInput" :value="myText" />
+  <div class="modal_updatePictr">
     <div class="modal_chooseImage">
       <input type="image">
     </div>
-    
-      <label for="modal_inputcolor" class="modal_labelcolor">Выберите цвет</label>
-    <div class="modal_divcolor">
-      <input type="color" class="modal_inputcolor" id="modal_inputcolor" >    
+    <div class="modal_divupdateImgSelect">
+        <select class="modal_updateImgSelect">
+          <option value="">изображение</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+        </select> 
     </div>
-  </ModalWindow>
+  </div>
+  <div class="modal_bottombuttonsUpdate">
+    <button @click="switchmodal_updateCassa" class="modal_cancelbtn">Отмена</button>
+    <button @click="updateCassa()" class="modal_acceptbtn">Обновить</button>
+  </div>
+  </ModalWindow> -->
   
   </div>
 </template>
 
 <script>
-import CassaItem from '~/components/CassaItem.vue'
+/* import VueEmoji from 'emoji-vue'; */
+import Emoji from 'vuejs-emojis'
 import axios from '@/axios';
+import CassaItem from '~/components/CassaItem.vue';
 import ModalWindow from '~/components/ModalWindow.vue';
 /* import { url } from 'inspector'; */
 /* import { listenerCount } from 'process'; */
+
+/* const arrcassas = getCassas(); */
+
 
 export default {
   layout: 'empty',
@@ -259,10 +369,11 @@ export default {
       isModalCheckVisible: false,
       isModalDeleteVisible: false,
       isModalUpdateVisible: false,
+      isModalAddOperationVisible: false,
       state: this.state_prop,
     }
   },
-  components: { CassaItem, ModalWindow },
+  components: { CassaItem, ModalWindow, Emoji /* VueEmoji */},
   mounted() {
             document.getElementById("cassalist").addEventListener('mousedown', function(e)
             { 
@@ -272,6 +383,12 @@ export default {
         this.setClick();
     },
     methods: {
+       /*  onInput(event) {
+            // event.data contains the value of the textarea
+        },
+        clearTextarea(){
+          this.$refs.emoji.clear()
+        }, */
         setClick(){
 
             const b = document.getElementById("item")
@@ -346,7 +463,7 @@ export default {
           })
           .then(responce => console.log(responce))
         },
-        deleteCassa(){
+       /*  deleteCassa(){
           axios({
             method: 'DELETE',
             url: 'cassa/deleteCassa',
@@ -354,8 +471,8 @@ export default {
               "id": 1,
             },
           })
-        },
-        updateCassa(){
+        }, */
+        /* updateCassa(){
           axios({
             method: 'PUT',
             url: 'cassa/updateCassa',
@@ -383,34 +500,83 @@ export default {
               "currentAmount": 0
             },
           })
+        }, */
+        postCassaBank(){
+          const cassaname = document.getElementById('modal_inputname').value;
+          const cassaBankselect = document.getElementById('cassaBankSelect').value;
+          if (cassaBankselect === 'Касса'){
+            axios({
+              method: 'POST',
+              url: 'cassa/createCassa',
+              data:{
+                "cassaName":cassaname,
+                "balance": {
+                  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa1",
+                  "updated": "2022-11-13T05:44:04.838Z",
+                  "amount": 0,
+                  "amountUSD": 0,
+                  "amountEUR": 0,
+                  "amountCash": 0,
+                  "amountCard": 0
+                },
+                "predictBalance": {
+                  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa1",
+                  "updated": "2022-11-13T05:44:04.838Z",
+                  "amount": 0,
+                  "amountUSD": 0,
+                  "amountEUR": 0,
+                  "amountCash": 0,
+                  "amountCard": 0
+                },
+                "currencyType": 0,
+                "currentAmount": 0,
+                
+              }
+            })
+          }else{
+            axios({
+              method: 'POST',
+              url:'bank/createBank',
+              data:{
+                "mainCurrency": 0,
+                "amount": 0,
+                "amountUSD": 0,
+                "amountEUR": 0
+              }
+            })
+          }
         },
         postCassa(){
-          axios({
-            method: 'POST',
-            url: 'cassa/createCassa',
-            data:{
-              "balance": {
-                "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-                "updated": "2022-11-13T05:44:04.838Z",
-                "amount": 0,
-                "amountUSD": 0,
-                "amountEUR": 0,
-                "amountCash": 0,
-                "amountCard": 0
-              },
-              "predictBalance": {
-                "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-                "updated": "2022-11-13T05:44:04.838Z",
-                "amount": 0,
-                "amountUSD": 0,
-                "amountEUR": 0,
-                "amountCash": 0,
-                "amountCard": 0
-              },
-              "currencyType": 0,
-              "currentAmount": 0
-            }
-          })
+          const cassaname = document.getElementById('modal_inputname').value;
+            axios({
+              method: 'POST',
+              url: 'cassa/createCassa',
+              data:{
+                "cassaName":cassaname,
+                "balance": {
+                  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa1",
+                  "updated": "2022-11-13T05:44:04.838Z",
+                  "amount": 0,
+                  "amountUSD": 0,
+                  "amountEUR": 0,
+                  "amountCash": 0,
+                  "amountCard": 0
+                },
+                "predictBalance": {
+                  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa1",
+                  "updated": "2022-11-13T05:44:04.838Z",
+                  "amount": 0,
+                  "amountUSD": 0,
+                  "amountEUR": 0,
+                  "amountCash": 0,
+                  "amountCard": 0
+                },
+                "currencyType": 0,
+                "currentAmount": 0,
+                
+              }
+            })
+
         },
         getCassa(){
           axios({
@@ -429,23 +595,38 @@ export default {
           console.log('posos')
         }
         },
-        switchmodal_deleteCassa(){
+/*         switchmodal_updateCassa(){
+          if (this.isModalUpdateVisible===true) {
+            this.isModalUpdateVisible=false;            
+          } else {
+            this.isModalUpdateVisible=true;
+          } 
+        }, */
+        switchModalAdd(){
+          if (this.isModalAddOperationVisible===true) {
+            this.isModalAddOperationVisible=false;
+          } else {
+            this.isModalAddOperationVisible=true;
+          }         
+        },
+        /* switchmodal_deleteCassa(){
           if (this.isModalDeleteVisible===true) {
-            this.isModalCheckVisible=false;            
+            this.isModalDeleteVisible=false;            
           } else {
             this.isModalDeleteVisible=true;
-            
           } 
-        },
+        }, */
         switchModalVisible(){
           if (this.isModalCheckVisible===true) {
             this.isModalCheckVisible=false;
+            /* document.querySelector('.btn-add-check').setAttribute('disabled', false); */
             document.querySelector(".login-topimg").style.backgroundFilter = 'blur(5px)';
           } else {
             this.isModalCheckVisible=true;
+            /* document.querySelector('.btn-add-check').setAttribute('disabled', false); */
             document.querySelector('.login-topimg').style.baackgroundFilter = 'blur(5px)';
-          }          
-          console.log('isModalVisible = ', this.isModalCheckVisible.valueOf(this.isModalCheckVisible));
+            
+          }
         },          
         deleteBank(){
           axios({
@@ -602,7 +783,7 @@ export default {
             method: 'POST',
             url:'operationCassa/createOperationCassa',
             data:{
-              "operationType": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+              "operationType": "3fa85f64-5717-4562-b3fc-2c963f66afa5",
               "amount": 0,
               "amountUSD": 0,
               "amountEUR": 0,
