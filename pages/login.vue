@@ -121,6 +121,7 @@
   </div>
 </template>
 <script>
+import Vue from 'vue'
 import axios from '@/axios';
 export default {
   layout: 'empty',
@@ -148,11 +149,11 @@ export default {
             this.$router.push({ name: 'cassalist', path: '/cassalist', component: 'pages/cassalist.vue' })
         } catch(err){
         if (err !== 200){
+           const kooka = err.$cookiz.set('kooka', 'kooka202');
           
-          const kooka = 201
-          err.$cookiz.set(kooka);
-          await this.$router.push({ name: 'login', path: '/login', component: 'pages/login.vue' })
-          console.log('kooka = ', this.$cookiz.kooka.value)
+          this.$router.push({ name: 'login', path: '/login', component: 'pages/login.vue' })
+          console.log('kooka = ' + kooka)
+          console.log(Vue.$cookiz.get('kooka'))
         }
       }
     }

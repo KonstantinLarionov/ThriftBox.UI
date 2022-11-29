@@ -59,10 +59,12 @@
             </div>     
             
             <div class="last_operations_list">
-                <CassaOperation storeName="Оплата в магазине" 
+              <div v-for="cassaOperation in cassaOperationsView" v-bind:key="cassaOperation.$Id">
+              <CassaOperation :storeName=cassaOperation.name 
                                 storeAdress="пр. Братьев Коростылёвых" 
                                 totalCost="7777,77">
                 </CassaOperation>
+              </div>  
                 <CassaOperation storeName="Оплата заправки" 
                                 storeAdress="ул. Пушкина, дом Колотушкина" 
                                 totalCost="5000">
@@ -153,9 +155,12 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import CassaOperation from '~/components/CassaOperation.vue';
 import axios from '@/axios';
 import ModalWindow from '~/components/ModalWindow.vue';
+
+
 export default {
     layout: "empty",
     // props: {
@@ -166,10 +171,49 @@ export default {
         isModalAddOperationVisible: false,
       }
     },
+    date(){
+      return{
+        cassaOperationsView: []
+      }
+    },
+    mounted(){
+      this.cassaOperationsView = []
+      this.getcassaoperations()
+      this.getOperationCassa(Vue.$cookiz.get('UserInfo'))
+    },
     components: { CassaOperation, ModalWindow },
     methods:{
+      async getOperationCassa(id){
+        let promise = await new Promise ( (resolve, reject)=>{
+            promise =axios({            
+              method: 'GET',
+              url:'operationCassa/getOperationCassa',
+              params: id,
+              })
+              resolve(promise)
+            })
+        },
         openCassaList(){
             this.$router.push({name:'cassalist', path:'/cassalist', component: 'pages/cassalist'});
+        },
+        async getOperationsCassa(){
+          let arr = []
+
+           let promise = await new Promise ( (resolve, reject)=>{
+            promise = axios.get( 'operationCassa/getOperationsCassa', {params:{ 
+              CassaId: '08dad1c9-285a-4146-8365-cca928f45114'
+              }
+            });
+            console.log('promise')
+          console.log(promise)
+          resolve(promise);
+          })
+          arr = promise.data.cassa
+          for (const j in arr) {
+            this.$set(this.cassaItems, j, arr[j])
+            console.log(arr[j])
+          }
+          this.$forceUpdate();
         },
         createOperationCassa(){
           axios({

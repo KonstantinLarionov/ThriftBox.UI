@@ -63,17 +63,18 @@
     
 
     <div class="list-wrapper">
-               
-      <CassaItem v-for="item in cassasarr=getCassas()" v-bind:key="item.Id" 
-                  id="item0"
-                  bankName = Tinkoff0
+    <div v-for="cassaItem in cassaItems" v-bind:key="cassaItem.$Id">
+      <div @click="openCassaOperation(cassaItem.Id)" class="center"></div>
+      <CassaItem
+                  :id=cassaItem.Id
+                  :bankName = cassaItem.cassaName
                   numberWeekTransactions = '15'
-                  mainCurrency = 'RUB'
-                  mainCurrencyTotal = '150 000,00'
-                  secondCurrencyTotal = '50 000,00' 
-                  thirdCurrencyTotal = '35 000,00' 
+                  mainCurrency = "RUB"
+                  :mainCurrencyTotal = cassaItem.amount
+                  :secondCurrencyTotal = cassaItem.amountUSD
+                  :thirdCurrencyTotal = cassaItem.amountEUR
                   :state="state"></CassaItem> 
-
+    </div>
       <!-- <div> -->        
         <!-- <div @click="switchmodal_updateCassa()" class="left"><img src="~/assets/imgs/edit.svg" alt="изменить" class="edit_img"> </div> -->
         <div @click="openCassaOperation()" class="center"></div>
@@ -88,6 +89,7 @@
                   :state="state"></CassaItem>       
         <!-- </div> -->
         
+      <CassaItem></CassaItem>
       <CassaItem></CassaItem>
       <CassaItem></CassaItem>
       <CassaItem></CassaItem>
@@ -348,11 +350,16 @@
 
 <script>
 /* import VueEmoji from 'emoji-vue'; */
+// import { resolve } from 'path';
+// import { reject } from 'q';
+
 import Emoji from 'vuejs-emojis'
 import axios from '@/axios';
 import CassaItem from '~/components/CassaItem.vue';
 import ModalWindow from '~/components/ModalWindow.vue';
-/* import { url } from 'inspector'; */
+
+
+ /* import { url } from 'inspector';  */
 /* import { listenerCount } from 'process'; */
 
 /* const arrcassas = getCassas(); */
@@ -373,14 +380,21 @@ export default {
       state: this.state_prop,
     }
   },
+  date(){
+    return{
+      cassaItems: [],
+    }
+  },
   components: { CassaItem, ModalWindow, Emoji /* VueEmoji */},
   mounted() {
             document.getElementById("cassalist").addEventListener('mousedown', function(e)
             { 
                 console.log('asdasdasdas')
-                this.state = "standart";
+                this.state = "standart";                
             })
         this.setClick();
+        this.cassaItems = [];
+        this.getCassas();
     },
     methods: {
        /*  onInput(event) {
@@ -411,57 +425,24 @@ export default {
             })()
             b.onmousedown = b.onpointerdown = b.onpointerup = b.onmouseup = m
         },
-        getCassas(){
-          axios({
-            method: 'GET',
-            url: 'cassa/getCassas',
-            params:{ 
-              UserId: '08dac15a-e33e-4aa3-89d4-e4bff1413089'
-            },
-            data:{
-              "cassa": [{
-                "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-                "updated": "2022-11-13T05:45:03.098Z",
-                "balance": {
-                  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-                  "updated": "2022-11-13T05:45:03.098Z",
-                  "amount": 0,
-                  "amountUSD": 0,
-                  "amountEUR": 0,
-                  "amountCash": 0,
-                  "amountCard": 0
-                },
-                "predictBalance": {
-                  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-                  "updated": "2022-11-13T05:45:03.098Z",
-                  "amount": 0,
-                  "amountUSD": 0,
-                  "amountEUR": 0,
-                  "amountCash": 0,
-                  "amountCard": 0
-                },
-                "operations": [{
-                    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-                    "updated": "2022-11-13T05:45:03.098Z",
-                    "operationType": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-                    "amount": 0,
-                    "amountUSD": 0,
-                    "amountEUR": 0,
-                    "courseUSD": 0,
-                    "courseEUR": 0,
-                    "isCash": true,
-                    "isExpense": true,
-                    "isPredict": true,
-                    "currencyType": 0,
-                    "description": "string",
-                    "created": "2022-11-13T05:45:03.098Z"
-                  }],
-                "currencyType": 0,
-                "currentAmount": 0
-              }]
-            }
+        async getCassas(){
+          let arr = []
+
+           let promise = await new Promise ( (resolve, reject)=>{
+            promise = axios.get( 'cassa/getCassas', {params:{ 
+              UserId: '08dad1c9-03c4-4a02-887f-285877dd27aa'
+              }
+            });
+            console.log('promise')
+          console.log(promise)
+          resolve(promise);
           })
-          .then(responce => console.log(responce))
+          arr = promise.data.cassa
+          for (const j in arr) {
+            this.$set(this.cassaItems, j, arr[j])
+            console.log(arr[j])
+          }
+          this.$forceUpdate();
         },
        /*  deleteCassa(){
           axios({
@@ -590,9 +571,9 @@ export default {
         openCassaOperation(){
           try{
           this.$router.push({ name: 'cassaOperation', path: '/cassaOperation', component: 'pages/cassaOperation.vue' });
-          console.log('okey')
+          const cookz = this.cookiz.set()
         } catch {
-          console.log('posos')
+          
         }
         },
 /*         switchmodal_updateCassa(){
